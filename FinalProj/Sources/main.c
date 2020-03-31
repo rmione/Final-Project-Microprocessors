@@ -1,84 +1,38 @@
 //*********************************************************************  
 //*                         Lab 4 MILESTONE                           
-//*                       McMaster University                         
-//*                      2DP4 Microcontrollers                        
-//*                          Lab Section 0X                           
-//*                  First Name Last Name MACID #######               
-//*                  First Name Last Name MACID #######               
-//*********************************************************************
-//*********************************************************************
-//*                          Description                              
-//*                                                                   
-//*                                                                   
-//*                                                             
-//*                                                                   
-//*                                                                   
-//*                                                                   
-//*********************************************************************
-// Clock Speed is 4 MHz                              //
-//*********************************************************************
-//*                            References                             
-//* Read Lecture W7 and W8
-//*
-//* Huang chapters 6.5, 8.1-8.5                                       
-//* Freescale MC9S12G Reference Manual and Data Sheet rev 1.25        
-//* See also mc9s12ga240.h for predefined Vector Table + offset names 
-//*********************************************************************
-//*********************************************************************
-//*                       Compilation Notes                           
-//* Ensure project is cross-assembled under the Small memory model     
-//*********************************************************************
+//                    Computer Engineering 2DP4  
+//                       McMaster University                       
+//                         Final Project
+//                    Code Written by Riley Mione
+//    References made to MC9S12G Reference Manual and Lecture Slides
 
-/*Include*/
-#include <hidef.h>      /* common defines and macros */
-#include "derivative.h"      /* derivative-specific definitions */
-#include "SCI.h" // Header for modified serial communications 
-/*Prototypes*/
+
+// INCLUDE STATEMENTS 
+#include <hidef.h>     
+#include "derivative.h"    
+#include "SCI.h" 
+
+
+// FUNCTION PROTOTYPES
 void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
 
- /* DECLARE ALL YOUR GLOBAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
-
-  
-     
   
   
-  
-  
+// Global Variable Declaration
   
   
      
-     
-     
-  /* DECLARE ALL YOUR GLOBAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
-  
+    
 
 void main(void) {		
 
- /* SET YOUR YOUR GLOBAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
+  // Inside the main loop all the registers are configured
   
-     
+  ATDCTL5 = 0x24; // Continuous conversion on specified channel (AN4)
+  ATDCTL1 = 0x48; 
+  ATDCTL3 = 0x88; // Right justified w/ one sample per sequence 
   
-  
-  
-  
-  
-  
-     
-     
-     
-  /* SET YOUR YOUR GLOBAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
-/* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
-
-
-     
-  /* DECLARE ALL YOUR LOCAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
      
   /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
   /////////////////////////////////////////////////////  
@@ -129,8 +83,6 @@ void main(void) {
   }  
 }
 
-  /* INTERRUPT SERIVE ROUTINES (ISRs) GO BELOW*/
-  /////////////////////////////////////////////////////  
 
 /*
  * This is the Interrupt Service Routine for TIC channel 0 (Code Warrior has predefined the name for you as "Vtimch0"                                                    
@@ -183,42 +135,12 @@ interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
  */           
 interrupt  VectorNumber_Vtimch1 void ISR_Vtimch1(void)
 {
-  /* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
-  unsigned int temp; //DON'T EDIT THIS
 
+  unsigned int temp; 
+  
+  
+  
 
-  /* DECLARE ALL YOUR LOCAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
-  
-    /* YOUR CODE GOES BELOW*/
-  //////////////////////////////////////////////////// 
-   
-  
-  
-  
-  // Available Functions for your use
-  // Lab4Delay1ms(a): a*1ms delay
-  
-  
-  
-  
-  
-  
-  
-    // Functions available for serial communication (NOTE: Look at Challenge 5 on adding additional .c/.h)
-  // Serial Communication Functions by default are not provided in this template  
-  // SCI_init- Sets the baud rate
-  // OutString - Outputs a string to Serial
-  // OutChar - Output a character to Serial
-  // OutUDec - Output a decimal to Serial
-  // OutUHex - Output a hex to Serial
-  // To print out a new line use SCI_OutChar(CR)
-  
-  
-     /* YOUR CODE GOES ABOVE*/
-  ////////////////////////////////////////////////////  
-  
   /* RESETS INTERRUPT (Don't Edit)*/
   ////////////////////////////////////////////////////  
   temp = TC1;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
