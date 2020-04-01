@@ -16,14 +16,27 @@
 // FUNCTION PROTOTYPES
 void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
-
+double arcsin(double angle); 
   
   
 // Global Variable Declaration
   
   
-int angle; 
+int accinput; 
+double val;  
+int theta; 
     
+// Max and min values of the accelerometer
+double max = 1599.0; 
+double min = 1065.0; 
+double mid = 1332.0; 
+
+
+double bruh(double ratio) {
+  // Taylor series approximation of arcsine given the angle in radians 
+  double output = ratio + ((ratio*ratio*ratio)/6) + (3*(ratio*ratio*ratio*ratio*ratio)/40) + (5*(ratio*ratio*ratio*ratio*ratio*ratio*ratio)/112);
+  return output;                                                                                              
+}
 
 void main(void) {		
 
@@ -46,7 +59,7 @@ void main(void) {
   
   DDR1AD = 0x10110000; // First 4 ports are inputs. 
   PER1AD = 0x01001111; // pull up resistors on the inputs
-  ATDDIEN = 0x10110000; // Ports 0-3 are analog inputs, ports 4-7 are digital. 
+  ATDDIEN =0x10110000;// Ports 0-3 are analog inputs, ports 4-7 are digital. 
   
      /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
   /////////////////////////////////////////////////////  
@@ -96,20 +109,22 @@ void main(void) {
   SCI_Init(9600); 
   for(;;){
     SCI_OutString("Current Z value ");
-    angle = ATDDR0;
-    if (angle!=0){
-      PTJ = 0xFF;; 
+    accinput = ATDDR0;
+    if (accinput >= mid) {
+      val = (accinput - mid)/267;   
+    }                   
+    else if (accinput <= mid) {
+      val = (mid - accinput)/267;
     }
-    SCI_OutUDec(angle); 
     
+    theta = bruh(val); 
     
-  }  
-}
-
-
-/*
- * This is the Interrupt Service Routine for TIC channel 0 (Code Warrior has predefined the name for you as "Vtimch0"                                                    
- */           
+     
+    
+    SCI_OutUDec(theta); 
+    Lab4Delay1ms(500); 
+  }
+}         
 interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
 {
   /* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
