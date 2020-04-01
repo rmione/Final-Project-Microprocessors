@@ -10,7 +10,7 @@
 // INCLUDE STATEMENTS 
 #include <hidef.h>     
 #include "derivative.h"    
-#include "SCI.h" 
+#include "SCI.h"
 
 
 // FUNCTION PROTOTYPES
@@ -22,19 +22,33 @@ void OutCRLF(void);
 // Global Variable Declaration
   
   
-     
+int angle; 
     
 
 void main(void) {		
 
   // Inside the main loop all the registers are configured
-  
-  ATDCTL5 = 0x24; // Continuous conversion on specified channel (AN4)
-  ATDCTL1 = 0x48; 
+  ATDCTL1 = 0x4F; 
   ATDCTL3 = 0x88; // Right justified w/ one sample per sequence 
+  ATDCTL4 = 0x02; 
+  ATDCTL5 = 0x26; // Continuous conversion on specified channel (AN4)
   
-     
-  /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
+  // Clock Speed related Registers 
+  
+  CPMUPROT = 0x26; // allow changes to cpu timing registers
+  CPMUFLG = 0x00; // Makes f_pll = fvco/4
+  CPMUCLKS = 0x80; // f_bus = f_pll/2 
+  CPMUOSC = 0x80;  // 
+  CPMUREFDIV = 0x01; 
+  CPMUSYNR = 0x01; // Set CPU sync ratio value to 1
+  CPMUPOSTDIV = 0x01; // Set CPU post ratio value to 1 
+  
+  
+  DDR1AD = 0x10110000; // First 4 ports are inputs. 
+  PER1AD = 0x01001111; // pull up resistors on the inputs
+  ATDDIEN = 0x10110000; // Ports 0-3 are analog inputs, ports 4-7 are digital. 
+  
+     /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
   /////////////////////////////////////////////////////  
   //Set Ports
   DDRJ = 0xFF;      //set all port J as output
@@ -79,7 +93,16 @@ void main(void) {
  
     /* Esduino Loops Forever*/
   //////////////////////////////////////////////////// 
+  SCI_Init(9600); 
   for(;;){
+    SCI_OutString("Current Z value ");
+    angle = ATDDR0;
+    if (angle!=0){
+      PTJ = 0xFF;; 
+    }
+    SCI_OutUDec(angle); 
+    
+    
   }  
 }
 
