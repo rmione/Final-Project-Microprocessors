@@ -12,34 +12,61 @@
 #include "derivative.h"    
 #include "SCI.h"
 
-
 // FUNCTION PROTOTYPES
 void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
-double arcsin(double angle); 
+int accinput;
+double result;
+int bruh(double ratio); 
   
   
 // Global Variable Declaration
   
   
-int accinput; 
-double val;  
-int theta; 
+ 
+//double val;  
+int theta;
+//double result; 
     
 // Max and min values of the accelerometer
 double max = 1599.0; 
 double min = 1065.0; 
 double mid = 1332.0; 
+double result; 
 
-
-double bruh(double ratio) {
+int bruh(double ratio) {
   // Taylor series approximation of arcsine given the angle in radians 
-  double output = ratio + ((ratio*ratio*ratio)/6) + (3*(ratio*ratio*ratio*ratio*ratio)/40) + (5*(ratio*ratio*ratio*ratio*ratio*ratio*ratio)/112);
-  return output;                                                                                              
+  double output = ratio + ((ratio*ratio*ratio)/6.0) + (3*(ratio*ratio*ratio*ratio*ratio)/40.0) + (5*(ratio*ratio*ratio*ratio*ratio*ratio*ratio)/112.0);
+  // We want to return the angle in degrees
+  return (output*(180/3.14));                                                                                              
 }
 
-void main(void) {		
+void handler() {
+  
+  accinput = ATDDR0;
+  SCI_OutString("Current Z value ");
+  if (accinput >= mid) { 
+    result = (accinput - mid)/267.0; 
+       
+ 
+    }
+   
+  else {
+    result = 0; 
+     
+    }
+ 
 
+   
+  SCI_OutUDec(bruh(result));
+  
+  
+  
+}
+
+void main(void) {
+  		
+  
   // Inside the main loop all the registers are configured
   ATDCTL1 = 0x4F; 
   ATDCTL3 = 0x88; // Right justified w/ one sample per sequence 
@@ -107,99 +134,10 @@ void main(void) {
     /* Esduino Loops Forever*/
   //////////////////////////////////////////////////// 
   SCI_Init(9600); 
+  
   for(;;){
-    SCI_OutString("Current Z value ");
-    accinput = ATDDR0;
-    if (accinput >= mid) {
-      val = (accinput - mid)/267;   
-    }                   
-    else if (accinput <= mid) {
-      val = (mid - accinput)/267;
-    }
+    handler();
     
-    theta = bruh(val); 
     
-     
-    
-    SCI_OutUDec(theta); 
-    Lab4Delay1ms(500); 
   }
-}         
-interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
-{
-  /* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
-  unsigned int temp; //DON'T EDIT THIS
-
-
-  /* DECLARE ALL YOUR LOCAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
-  
-    /* YOUR CODE GOES BELOW*/
-  //////////////////////////////////////////////////// 
-   
-  
-  
-  
-  // Available Functions for your use
-  // Lab4Delay1ms(a): a*1ms delay
-  
-  
-  
-  
-  
-  
-  
-    // Functions available for serial communication (NOTE: Look at Challenge 5 on adding additional .c/.h)
-  // Serial Communication Functions by default are not provided in this template  
-  // SCI_init- Sets the baud rate
-  // OutString - Outputs a string to Serial
-  // OutChar - Output a character to Serial
-  // OutUDec - Output a decimal to Serial
-  // OutUHex - Output a hex to Serial
-  // To print out a new line use SCI_OutChar(CR)
-  
-  
-     /* YOUR CODE GOES ABOVE*/
-  ////////////////////////////////////////////////////  
-  
-  /* RESETS INTERRUPT (Don't Edit)*/
-  ////////////////////////////////////////////////////  
-  temp = TC0;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
-  }
-
- /*
- * This is the Interrupt Service Routine for TIC channel 1 (Code Warrior has predefined the name for you as "Vtimch1"                                                    
- */           
-interrupt  VectorNumber_Vtimch1 void ISR_Vtimch1(void)
-{
-
-  unsigned int temp; 
-  
-  
-  
-
-  /* RESETS INTERRUPT (Don't Edit)*/
-  ////////////////////////////////////////////////////  
-  temp = TC1;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
-  }
-  
-/* FUNCTIONS GO BELOW: Don't Edit */
-
-// Lazy delay function to waste time for 1ms. Avoids the use of the timer, which is being used elsewhere
-void Lab4Delay1ms(unsigned int numTimes){
-  unsigned int i;
-  unsigned int j;
-  
-  for(j = 0; j<numTimes; j++){
-    for(i = 0; i<68; i++){
-      // Delay
-      PTJ = PTJ;
-      PTJ = PTJ;
-      PTJ = PTJ;
-      PTJ = PTJ;
-      PTJ = PTJ;
-    }
-  }   
 }
-
