@@ -11,7 +11,7 @@
 #include <hidef.h>     
 #include "derivative.h"    
 #include "SCI.h"
-
+#define PI (3.14)
 // FUNCTION PROTOTYPES
 void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
@@ -32,21 +32,36 @@ int theta;
 double max = 1599.0; 
 double min = 1065.0; 
 double mid = 1332.0; 
-double result; 
+
+
+double result;
+
 
 int bruh(double ratio) {
-  // Taylor series approximation of arcsine given the angle in radians 
+  /* Taylor series approximation of arcsine given the angle in radians 
+     This approximation is not very good. The angles are a good margin off.
+     I can correct for this in the normalization equation by lowering the denominator */
+     
   double output = ratio + ((ratio*ratio*ratio)/6.0) + (3*(ratio*ratio*ratio*ratio*ratio)/40.0) + (5*(ratio*ratio*ratio*ratio*ratio*ratio*ratio)/112.0);
   // We want to return the angle in degrees
-  return (output*(180/3.14));                                                                                              
+  return (output*(180/PI));                                                                                              
 }
+
+void OutCRLF(void){
+  SCI_OutChar(CR);
+  SCI_OutChar(LF);
+  PTJ ^= 0x20;          // toggle LED D2
+}
+
 
 void handler() {
   
   accinput = ATDDR0;
+  
   SCI_OutString("Current Z value ");
-  if (accinput >= mid) { 
-    result = (accinput - mid)/267.0; 
+  
+  if (accinput >= (mid+20)) { 
+    result = (accinput - mid)/240;  // Normalize the ADC values to get an approximation of the ratio. 
        
  
     }
@@ -57,7 +72,7 @@ void handler() {
     }
  
 
-   
+  // we then send this to the arcsine function to get our current angle. 
   SCI_OutUDec(bruh(result));
   
   
@@ -71,7 +86,7 @@ void main(void) {
   ATDCTL1 = 0x4F; 
   ATDCTL3 = 0x88; // Right justified w/ one sample per sequence 
   ATDCTL4 = 0x02; 
-  ATDCTL5 = 0x26; // Continuous conversion on specified channel (AN4)
+  ATDCTL5 = 0x25; // Continuous conversion on specified channel (AN4)
   
   // Clock Speed related Registers 
   
@@ -84,9 +99,9 @@ void main(void) {
   CPMUPOSTDIV = 0x01; // Set CPU post ratio value to 1 
   
   
-  DDR1AD = 0x10110000; // First 4 ports are inputs. 
-  PER1AD = 0x01001111; // pull up resistors on the inputs
-  ATDDIEN =0x10110000;// Ports 0-3 are analog inputs, ports 4-7 are digital. 
+  DDR1AD = 0x10100000; // First 4 ports are inputs. 
+  PER1AD = 0x01011111; // pull up resistors on the inputs
+  ATDDIEN =0x10100000;// Ports 0-3 are analog inputs, ports 4-7 are digital. 
   
      /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
   /////////////////////////////////////////////////////  
@@ -137,7 +152,25 @@ void main(void) {
   
   for(;;){
     handler();
-    
+    Lab4Delay1ms(250);
     
   }
+}
+
+
+
+void Lab4Delay1ms(unsigned int numTimes){
+  unsigned int i;
+  unsigned int j;
+  
+  for(j = 0; j<numTimes; j++){
+    for(i = 0; i<68; i++){
+      // Delay
+      PTJ = PTJ;
+      PTJ = PTJ;
+      PTJ = PTJ;
+      PTJ = PTJ;
+      PTJ = PTJ;
+    }
+  }   
 }
