@@ -17,17 +17,15 @@ void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
 int accinput;
 double result;
-int bruh(double ratio); 
+int arc_sine(double ratio); 
   
   
 // Global Variable Declaration
   
-  
- 
-//double val;  
+int mode = 0;  
+int state = 1;
 int theta;
-//double result; 
-    
+
 // Max and min values of the accelerometer
 double max = 1599.0; 
 double min = 1065.0; 
@@ -39,9 +37,9 @@ int setup[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09}; // A
 //int setup_p[] = {0b00000, 0b00001, 0b00010, 0b00011, 0b00100, 0b00101, 0b00110, 0b00111, 0b01000, 0b01001};
 
 double result;
+int counter = 0;
 
-
-int bruh(double ratio) {
+int arc_sine(double ratio) {
   /* Taylor series approximation of arcsine given the angle in radians 
      This approximation is not very good. The angles are a good margin off.
      I can correct for this in the normalization equation by lowering the denominator */
@@ -63,13 +61,21 @@ void OutCRLF(void){
 void handler() {
   // having a handler function promotes seperation of concerns . 
   
-  accinput = ATDDR0;
+  if (mode == 0){
+    ATDCTL5 = 0x24;
+    accinput = ATDDR0;
+  }
+  else if (mode == 1) {
+    ATDCTL5 = 0x25; // Change the channel to AN5
+    accinput = ATDDR0;
+  }
   
-  SCI_OutString("Current Angle: ");
+  //SCI_OutString("Current Angle: ");
   
+  // The middle point has an extra 20 point ceiling/buffer to work with. 
   if (accinput >= (mid+20)) { 
     result = (accinput - mid)/240;  // Normalize the ADC values to get an approximation of the ratio. 
-    theta = bruh(result);  
+    theta = arc_sine(result);  
  
     }
    
@@ -81,19 +87,26 @@ void handler() {
  
   
   // we then send this to the arcsine function to get our current angle. 
-  SCI_OutUDec(theta);
+  //SCI_OutUDec(mode);
+  
+  //OutCRLF();
   if (theta > 90) {
     // This case catches angles out of range. 
     ones = 0;
     tens = 9;
+    theta = 90; 
   } 
+  
   
   else {
     ones = theta%10; // ones column of the decimal number
     tens = theta/10; // tens column of the decimal number
   }
   
+  //SCI_OutUDec(mode);
   
+  SCI_OutUDec(theta);
+  OutCRLF();
  
    
   // This sets the registers equal to the BCD output needed. 
@@ -138,39 +151,21 @@ void main(void) {
   /////////////////////////////////////////////////////  
   //Set Ports
   DDRJ = 0xFF;      //set all port J as output
-/*
- * The next six assignment statements configure the Timer Input Capture                                                   
- */           
-  TSCR1 = 0x90;    //Timer System Control Register 1
-                    // TSCR1[7] = TEN:  Timer Enable (0-disable, 1-enable)
-                    // TSCR1[6] = TSWAI:  Timer runs during WAI (0-enable, 1-disable)
-                    // TSCR1[5] = TSFRZ:  Timer runs during WAI (0-enable, 1-disable)
-                    // TSCR1[4] = TFFCA:  Timer Fast Flag Clear All (0-normal 1-read/write clears interrupt flags)
-                    // TSCR1[3] = PRT:  Precision Timer (0-legacy, 1-precision)
-                    // TSCR1[2:0] not used
 
-  TSCR2 = 0x04;    //Timer System Control Register 2
-                    // TSCR2[7] = TOI: Timer Overflow Interrupt Enable (0-inhibited, 1-hardware irq when TOF=1)
-                    // TSCR2[6:3] not used
-                    // TSCR2[2:0] = Timer Prescaler Select: See Table22-12 of MC9S12G Family Reference Manual r1.25 (set for bus/1)
-  
-                    
-  TIOS = 0xB0;     //Timer Input Capture or Output capture
-                    //set TIC[0] and input (similar to DDR)
-  PERT = 0x10;     //Enable Pull-Up resistor on TIC[0] and TIC[1]
+ // Now starts timer and interrupt register configuration.
+  TIE   = 0x03;
 
-  TCTL3 = 0x00;    //TCTL3 & TCTL4 configure which edge(s) to capture
-  TCTL4 = 0x10;    //Configured for falling edge on TIC[0] (channel 0) and TIC[1] (channel 1)
+  PERT  = 0x03;
 
-/*
- * The next one assignment statement configures the Timer Interrupt Enable                                                   
- */           
-   
-  TIE = 0x03;      //Timer Interrupt Enable
+  TIOS  = 0xFC;
 
-/*
- * The next one assignment statement configures the ESDX to catch Interrupt Requests                                                   
- */           
+  TSCR1 = 0x90;
+
+  TSCR2 = 0x04;
+
+  TCTL3 = 0x00;
+
+  TCTL4 = 0x0A;      
   
 	EnableInterrupts; //CodeWarrior's method of enabling interrupts
    
@@ -179,13 +174,17 @@ void main(void) {
  
     /* Esduino Loops Forever*/
   //////////////////////////////////////////////////// 
-  SCI_Init(9600); 
   
-  for(;;){
+  SCI_Init(9600);
+  while(state==1){
+    
     handler();
     Lab4Delay1ms(400);
     
-  }
+  } 
+  
+  
+  
 }
 
 
@@ -208,91 +207,21 @@ void Lab4Delay1ms(unsigned int numTimes){
 
 interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
 {
-  /* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
   unsigned int temp; //DON'T EDIT THIS
-
-
-  /* DECLARE ALL YOUR LOCAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
   
-    /* YOUR CODE GOES BELOW*/
-  //////////////////////////////////////////////////// 
-   
-  SCI_OutString("Hello");
+  mode++; 
+  mode%=2;
+  temp = TC0; 
+}
   
+  interrupt  VectorNumber_Vtimch1 void ISR_Vtimch1(void)
+{
+  unsigned int temp; //DON'T EDIT THIS
   
-  // Available Functions for your use
-  // Lab4Delay1ms(a): a*1ms delay
-  
-  
-  
-  
-  
-  
-  
-    // Functions available for serial communication (NOTE: Look at Challenge 5 on adding additional .c/.h)
-  // Serial Communication Functions by default are not provided in this template  
-  // SCI_init- Sets the baud rate
-  // OutString - Outputs a string to Serial
-  // OutChar - Output a character to Serial
-  // OutUDec - Output a decimal to Serial
-  // OutUHex - Output a hex to Serial
-  // To print out a new line use SCI_OutChar(CR)
-  
-  
-     /* YOUR CODE GOES ABOVE*/
-  ////////////////////////////////////////////////////  
-  
-  /* RESETS INTERRUPT (Don't Edit)*/
-  ////////////////////////////////////////////////////  
+  state++;
+  state%=2; 
   temp = TC0;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
   }
 
- /*
- * This is the Interrupt Service Routine for TIC channel 1 (Code Warrior has predefined the name for you as "Vtimch1"                                                    
- */           
-interrupt  VectorNumber_Vtimch1 void ISR_Vtimch1(void)
-{
-  /* DECLARE ALL YOUR LOCAL VARIABLES BELOW*/
-  /////////////////////////////////////////////////////
-  unsigned int temp; //DON'T EDIT THIS
-
-
-  /* DECLARE ALL YOUR LOCAL VARIABLES ABOVE*/   
-  /////////////////////////////////////////////////////
-  
-    /* YOUR CODE GOES BELOW*/
-  //////////////////////////////////////////////////// 
-   
-  
-  
-  
-  // Available Functions for your use
-  // Lab4Delay1ms(a): a*1ms delay
-  
-  
-  
-  
-  
-  
-  
-    // Functions available for serial communication (NOTE: Look at Challenge 5 on adding additional .c/.h)
-  // Serial Communication Functions by default are not provided in this template  
-  // SCI_init- Sets the baud rate
-  // OutString - Outputs a string to Serial
-  // OutChar - Output a character to Serial
-  // OutUDec - Output a decimal to Serial
-  // OutUHex - Output a hex to Serial
-  // To print out a new line use SCI_OutChar(CR)
-  
-  
-     /* YOUR CODE GOES ABOVE*/
-  ////////////////////////////////////////////////////  
-  
-  /* RESETS INTERRUPT (Don't Edit)*/
-  ////////////////////////////////////////////////////  
-  temp = TC1;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
-  }
 
 

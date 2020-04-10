@@ -31,8 +31,8 @@ Entry point: 0xC029 (_Startup)
 _startupData is allocated at 0xC031 and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x1500     36
-  _Copy    *toCopyDownBeg 0xC60E
+  _Range   pZeroOut       0x1500     40
+  _Copy    *toCopyDownBeg 0xC62B
 } _startupData;
 
 *********************************************************************************************
@@ -41,11 +41,10 @@ Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
 .init                             49     R     0xC000     0xC030   ROM_C000
 .startData                        10     R     0xC031     0xC03A   ROM_C000
-.rodata1                          22     R     0xC03B     0xC050   ROM_C000
-.text                            645     R     0xC051     0xC2D5   ROM_C000
-.copy                             30     R     0xC60E     0xC62B   ROM_C000
+.text                            696     R     0xC03B     0xC2F2   ROM_C000
+.copy                             31     R     0xC62B     0xC649   ROM_C000
 .stack                           256   R/W     0x1400     0x14FF   RAM
-.data                             24   R/W     0x1500     0x1517   RAM
+.data                             26   R/W     0x1500     0x1519   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
 .abs_section_b                     1   N/I        0xB        0xB   .absSeg2
@@ -321,13 +320,14 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_2f8                   2   N/I      0x2F8      0x2F9   .absSeg272
 .abs_section_ffee                  2     R     0xFFEE     0xFFEF   .absSeg273
 .abs_section_ffec                  2     R     0xFFEC     0xFFED   .absSeg274
-.common                           12   R/W     0x1518     0x1523   RAM
-RUNTIME                          824     R     0xC2D6     0xC60D   ROM_C000
+.bss                               2   R/W     0x151A     0x151B   RAM
+.common                           12   R/W     0x151C     0x1527   RAM
+RUNTIME                          824     R     0xC2F3     0xC62A   ROM_C000
 .vectSeg275_vect                   2     R     0xFFFE     0xFFFF   .vectSeg275
 
 Summary of section sizes per section type:
-READ_ONLY (R):         632 (dec:     1586)
-READ_WRITE (R/W):      124 (dec:      292)
+READ_ONLY (R):         650 (dec:     1616)
+READ_WRITE (R/W):      128 (dec:      296)
 NO_INIT (N/I):         156 (dec:      342)
 
 *********************************************************************************************
@@ -529,7 +529,7 @@ MODULE:                 -- mc9s12ga240.c.o --
      _PPSP                                      25D       1       1       0   .abs_section_25d
      _PIEP                                      25E       1       1       0   .abs_section_25e
      _PIFP                                      25F       1       1       0   .abs_section_25f
-     _PTJ                                       268       1       1       2   .abs_section_268
+     _PTJ                                       268       1       1       4   .abs_section_268
      _PTIJ                                      269       1       1       0   .abs_section_269
      _DDRJ                                      26A       1       1       1   .abs_section_26a
      _PERJ                                      26C       1       1       0   .abs_section_26c
@@ -554,8 +554,8 @@ MODULE:                 -- mc9s12ga240.c.o --
      _PARTID                                     1A       2       2       0   .abs_section_1a
      _DBGTB                                      24       2       2       0   .abs_section_24
      _TCNT                                       44       2       2       0   .abs_section_44
-     _TC0                                        50       2       2       1   .abs_section_50
-     _TC1                                        52       2       2       1   .abs_section_52
+     _TC0                                        50       2       2       2   .abs_section_50
+     _TC1                                        52       2       2       0   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
@@ -565,7 +565,7 @@ MODULE:                 -- mc9s12ga240.c.o --
      _PACNT                                      62       2       2       0   .abs_section_62
      _ATDCTL01                                   70       2       2       1   .abs_section_70
      _ATDCTL23                                   72       2       2       1   .abs_section_72
-     _ATDCTL45                                   74       2       2       2   .abs_section_74
+     _ATDCTL45                                   74       2       2       3   .abs_section_74
      _ATDCMPE                                    78       2       2       0   .abs_section_78
      _ATDSTAT2                                   7A       2       2       0   .abs_section_7a
      _ATDDIEN                                    7C       2       2       1   .abs_section_7c
@@ -618,24 +618,25 @@ MODULE:                 -- mc9s12ga240.c.o --
      _CPMUIRCTRIM                               2F8       2       2       0   .abs_section_2f8
 MODULE:                 -- main.c.o --
 - PROCEDURES:
-     bruh                                      C051      CA     202       3   .text       
-     handler                                   C11B      B0     176       1   .text       
-     main                                      C1CB      67     103       1   .text       
-     Lab4Delay1ms                              C232      30      48       1   .text       
-     ISR_Vtimch0                               C262       9       9       1   .text       
-     ISR_Vtimch1                               C26B       3       3       1   .text       
+     arc_sine                                  C03B      CA     202       3   .text       
+     OutCRLF                                   C105      13      19       1   .text       
+     handler                                   C118      C2     194       1   .text       
+     main                                      C1DA      6D     109       1   .text       
+     Lab4Delay1ms                              C247      30      48       1   .text       
+     ISR_Vtimch0                               C277      11      17       1   .text       
+     ISR_Vtimch1                               C288      11      17       1   .text       
 - VARIABLES:
-     STRING.Current.Angle...1                  C03B      10      16       1   .rodata1    
-     STRING.Hello.2                            C04B       6       6       1   .rodata1    
-     mid                                       1500       4       4       4   .data       
-     setup                                     1504      14      20       2   .data       
+     state                                     1500       2       2       3   .data       
+     mid                                       1502       4       4       4   .data       
+     setup                                     1506      14      20       2   .data       
+     mode                                      151A       2       2       3   .bss        
      _Vector_8                                 FFEE       2       2       0   .abs_section_ffee
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
-     accinput                                  1518       2       2       2   .common     
-     result                                    151A       4       4       4   .common     
-     theta                                     151E       2       2       3   .common     
-     ones                                      1520       2       2       3   .common     
-     tens                                      1522       2       2       3   .common     
+     accinput                                  151C       2       2       2   .common     
+     result                                    151E       4       4       4   .common     
+     theta                                     1522       2       2       4   .common     
+     ones                                      1524       2       2       3   .common     
+     tens                                      1526       2       2       3   .common     
 MODULE:                 -- Start12.c.o --
 - PROCEDURES:
      Init                                      C000      29      41       1   .init       
@@ -646,56 +647,55 @@ MODULE:                 -- Start12.c.o --
      __SEG_END_SSTACK                          1500       0       0       1               
 MODULE:                 -- FADD.C.o (ansis.lib) --
 - PROCEDURES:
-     F_ADDKL                                   C2D6      67     103       1   RUNTIME     
-     _FADD                                     C33D      15      21       4   RUNTIME     
-     _FSUB                                     C352      13      19       1   RUNTIME     
+     F_ADDKL                                   C2F3      67     103       1   RUNTIME     
+     _FADD                                     C35A      15      21       4   RUNTIME     
+     _FSUB                                     C36F      13      19       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FCMP.C.o (ansis.lib) --
 - PROCEDURES:
-     _FCMP                                     C365      26      38       1   RUNTIME     
+     _FCMP                                     C382      26      38       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FCONV.C.o (ansis.lib) --
 - PROCEDURES:
-     F_TOLONGK                                 C38B      33      51       1   RUNTIME     
-     F_FRLONGK                                 C3BE      1F      31       1   RUNTIME     
-     _FSFLOAT                                  C3DD      12      18       1   RUNTIME     
-     _FSTRUNC                                  C3EF      11      17       1   RUNTIME     
+     F_TOLONGK                                 C3A8      33      51       1   RUNTIME     
+     F_FRLONGK                                 C3DB      1F      31       1   RUNTIME     
+     _FSFLOAT                                  C3FA      12      18       1   RUNTIME     
+     _FSTRUNC                                  C40C      11      17       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FMUL.C.o (ansis.lib) --
 - PROCEDURES:
-     F_DIVKL                                   C400      8E     142       1   RUNTIME     
-     F_MULKL                                   C48E      58      88       1   RUNTIME     
-     _FMUL                                     C4E6      14      20       7   RUNTIME     
-     _FDIV                                     C4FA      1E      30       4   RUNTIME     
+     F_DIVKL                                   C41D      8E     142       1   RUNTIME     
+     F_MULKL                                   C4AB      58      88       1   RUNTIME     
+     _FMUL                                     C503      14      20       7   RUNTIME     
+     _FDIV                                     C517      1E      30       4   RUNTIME     
 - VARIABLES:
 MODULE:                 -- FREGS.C.o (ansis.lib) --
 - PROCEDURES:
-     F_PULK                                    C518      15      21       4   RUNTIME     
-     F_PULL                                    C52D      15      21       3   RUNTIME     
-     F_PSHK                                    C542      13      19       4   RUNTIME     
-     F_XGKL                                    C555      21      33       2   RUNTIME     
-     F_CLRK                                    C576       B      11       2   RUNTIME     
-     F_MAXK                                    C581       9       9       2   RUNTIME     
-     F_NORMK                                   C58A      3E      62       3   RUNTIME     
+     F_PULK                                    C535      15      21       4   RUNTIME     
+     F_PULL                                    C54A      15      21       3   RUNTIME     
+     F_PSHK                                    C55F      13      19       4   RUNTIME     
+     F_XGKL                                    C572      21      33       2   RUNTIME     
+     F_CLRK                                    C593       B      11       2   RUNTIME     
+     F_MAXK                                    C59E       9       9       2   RUNTIME     
+     F_NORMK                                   C5A7      3E      62       3   RUNTIME     
 - VARIABLES:
 MODULE:                 -- rtshc12.c.o (ansis.lib) --
 - PROCEDURES:
-     _NEG_P                                    C5C8       F      15       1   RUNTIME     
-     _ILSEXT                                   C5D7       7       7       1   RUNTIME     
-     _CASE_SEARCH_BYTE                         C5DE      17      23       1   RUNTIME     
+     _NEG_P                                    C5E5       F      15       1   RUNTIME     
+     _ILSEXT                                   C5F4       7       7       1   RUNTIME     
+     _CASE_SEARCH_BYTE                         C5FB      17      23       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- VREGS.C.o (ansis.lib) --
 - PROCEDURES:
-     L_NEGK                                    C5F5       7       7       2   RUNTIME     
-     L_PSHK                                    C5FC       8       8       1   RUNTIME     
-     SL_PULK                                   C604       A      10       1   RUNTIME     
+     L_NEGK                                    C612       7       7       2   RUNTIME     
+     L_PSHK                                    C619       8       8       1   RUNTIME     
+     SL_PULK                                   C621       A      10       1   RUNTIME     
 - VARIABLES:
 MODULE:                 -- SCI.C.o --
 - PROCEDURES:
-     SCI_Init                                  C26E      30      48       1   .text       
-     SCI_OutChar                               C29E       9       9       2   .text       
-     SCI_OutString                             C2A7       E      14       2   .text       
-     SCI_OutUDec                               C2B5      21      33       2   .text       
+     SCI_Init                                  C299      30      48       1   .text       
+     SCI_OutChar                               C2C9       9       9       3   .text       
+     SCI_OutUDec                               C2D2      21      33       2   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -703,7 +703,7 @@ MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
   mc9s12ga240.c.o                            342      0      0
-  main.c.o                                    36    541     26
+  main.c.o                                    40    606      4
   Start12.c.o                                  0     49      0
   FADD.C.o (ansis.lib)                         0    143      0
   FCMP.C.o (ansis.lib)                         0     38      0
@@ -712,21 +712,21 @@ MODULE STATISTIC
   FREGS.C.o (ansis.lib)                        0    176      0
   rtshc12.c.o (ansis.lib)                      0     45      0
   VREGS.C.o (ansis.lib)                        0     25      0
-  SCI.C.o                                      0    104      0
-  other                                      256     12     30
+  SCI.C.o                                      0     90      0
+  other                                      256     12     31
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
 SECTION: ".text"
-  bruh handler main Lab4Delay1ms ISR_Vtimch0 ISR_Vtimch1 SCI_Init SCI_OutChar 
-  SCI_OutString SCI_OutUDec 
+  arc_sine OutCRLF handler main Lab4Delay1ms ISR_Vtimch0 ISR_Vtimch1 SCI_Init 
+  SCI_OutChar SCI_OutUDec 
 SECTION: ".data"
-  mid setup 
+  state mid setup 
+SECTION: ".bss"
+  mode 
 SECTION: ".init"
   Init _Startup 
-SECTION: ".rodata1"
-  STRING.Current.Angle...1 STRING.Hello.2 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1342,8 +1342,8 @@ OBJECT LIST SORTED BY ADDRESS
      _TSCR2                                      4D       1       1       1   .abs_section_4d
      _TFLG1                                      4E       1       1       0   .abs_section_4e
      _TFLG2                                      4F       1       1       0   .abs_section_4f
-     _TC0                                        50       2       2       1   .abs_section_50
-     _TC1                                        52       2       2       1   .abs_section_52
+     _TC0                                        50       2       2       2   .abs_section_50
+     _TC1                                        52       2       2       0   .abs_section_52
      _TC2                                        54       2       2       0   .abs_section_54
      _TC3                                        56       2       2       0   .abs_section_56
      _TC4                                        58       2       2       0   .abs_section_58
@@ -1357,7 +1357,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PTPSR                                      6E       1       1       0   .abs_section_6e
      _ATDCTL01                                   70       2       2       1   .abs_section_70
      _ATDCTL23                                   72       2       2       1   .abs_section_72
-     _ATDCTL45                                   74       2       2       2   .abs_section_74
+     _ATDCTL45                                   74       2       2       3   .abs_section_74
      _ATDSTAT0                                   76       1       1       0   .abs_section_76
      _ATDCMPE                                    78       2       2       0   .abs_section_78
      _ATDSTAT2                                   7A       2       2       0   .abs_section_7a
@@ -1534,7 +1534,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PPSP                                      25D       1       1       0   .abs_section_25d
      _PIEP                                      25E       1       1       0   .abs_section_25e
      _PIFP                                      25F       1       1       0   .abs_section_25f
-     _PTJ                                       268       1       1       2   .abs_section_268
+     _PTJ                                       268       1       1       4   .abs_section_268
      _PTIJ                                      269       1       1       0   .abs_section_269
      _DDRJ                                      26A       1       1       1   .abs_section_26a
      _PERJ                                      26C       1       1       0   .abs_section_26c
@@ -1561,52 +1561,52 @@ OBJECT LIST SORTED BY ADDRESS
      _DAC0VOL                                   3C2       1       1       0   .abs_section_3c2
      _DAC1CTL                                   3C8       1       1       0   .abs_section_3c8
      _DAC1VOL                                   3CA       1       1       0   .abs_section_3ca
-     mid                                       1500       4       4       4   .data       
-     setup                                     1504      14      20       2   .data       
-     accinput                                  1518       2       2       2   .common     
-     result                                    151A       4       4       4   .common     
-     theta                                     151E       2       2       3   .common     
-     ones                                      1520       2       2       3   .common     
-     tens                                      1522       2       2       3   .common     
+     state                                     1500       2       2       3   .data       
+     mid                                       1502       4       4       4   .data       
+     setup                                     1506      14      20       2   .data       
+     mode                                      151A       2       2       3   .bss        
+     accinput                                  151C       2       2       2   .common     
+     result                                    151E       4       4       4   .common     
+     theta                                     1522       2       2       4   .common     
+     ones                                      1524       2       2       3   .common     
+     tens                                      1526       2       2       3   .common     
      Init                                      C000      29      41       1   .init       
      _Startup                                  C029       8       8       0   .init       
-     STRING.Current.Angle...1                  C03B      10      16       1   .rodata1    
-     STRING.Hello.2                            C04B       6       6       1   .rodata1    
-     bruh                                      C051      CA     202       3   .text       
-     handler                                   C11B      B0     176       1   .text       
-     main                                      C1CB      67     103       1   .text       
-     Lab4Delay1ms                              C232      30      48       1   .text       
-     ISR_Vtimch0                               C262       9       9       1   .text       
-     ISR_Vtimch1                               C26B       3       3       1   .text       
-     SCI_Init                                  C26E      30      48       1   .text       
-     SCI_OutChar                               C29E       9       9       2   .text       
-     SCI_OutString                             C2A7       E      14       2   .text       
-     SCI_OutUDec                               C2B5      21      33       2   .text       
-     F_ADDKL                                   C2D6      67     103       1   RUNTIME     
-     _FADD                                     C33D      15      21       4   RUNTIME     
-     _FSUB                                     C352      13      19       1   RUNTIME     
-     _FCMP                                     C365      26      38       1   RUNTIME     
-     F_TOLONGK                                 C38B      33      51       1   RUNTIME     
-     F_FRLONGK                                 C3BE      1F      31       1   RUNTIME     
-     _FSFLOAT                                  C3DD      12      18       1   RUNTIME     
-     _FSTRUNC                                  C3EF      11      17       1   RUNTIME     
-     F_DIVKL                                   C400      8E     142       1   RUNTIME     
-     F_MULKL                                   C48E      58      88       1   RUNTIME     
-     _FMUL                                     C4E6      14      20       7   RUNTIME     
-     _FDIV                                     C4FA      1E      30       4   RUNTIME     
-     F_PULK                                    C518      15      21       4   RUNTIME     
-     F_PULL                                    C52D      15      21       3   RUNTIME     
-     F_PSHK                                    C542      13      19       4   RUNTIME     
-     F_XGKL                                    C555      21      33       2   RUNTIME     
-     F_CLRK                                    C576       B      11       2   RUNTIME     
-     F_MAXK                                    C581       9       9       2   RUNTIME     
-     F_NORMK                                   C58A      3E      62       3   RUNTIME     
-     _NEG_P                                    C5C8       F      15       1   RUNTIME     
-     _ILSEXT                                   C5D7       7       7       1   RUNTIME     
-     _CASE_SEARCH_BYTE                         C5DE      17      23       1   RUNTIME     
-     L_NEGK                                    C5F5       7       7       2   RUNTIME     
-     L_PSHK                                    C5FC       8       8       1   RUNTIME     
-     SL_PULK                                   C604       A      10       1   RUNTIME     
+     arc_sine                                  C03B      CA     202       3   .text       
+     OutCRLF                                   C105      13      19       1   .text       
+     handler                                   C118      C2     194       1   .text       
+     main                                      C1DA      6D     109       1   .text       
+     Lab4Delay1ms                              C247      30      48       1   .text       
+     ISR_Vtimch0                               C277      11      17       1   .text       
+     ISR_Vtimch1                               C288      11      17       1   .text       
+     SCI_Init                                  C299      30      48       1   .text       
+     SCI_OutChar                               C2C9       9       9       3   .text       
+     SCI_OutUDec                               C2D2      21      33       2   .text       
+     F_ADDKL                                   C2F3      67     103       1   RUNTIME     
+     _FADD                                     C35A      15      21       4   RUNTIME     
+     _FSUB                                     C36F      13      19       1   RUNTIME     
+     _FCMP                                     C382      26      38       1   RUNTIME     
+     F_TOLONGK                                 C3A8      33      51       1   RUNTIME     
+     F_FRLONGK                                 C3DB      1F      31       1   RUNTIME     
+     _FSFLOAT                                  C3FA      12      18       1   RUNTIME     
+     _FSTRUNC                                  C40C      11      17       1   RUNTIME     
+     F_DIVKL                                   C41D      8E     142       1   RUNTIME     
+     F_MULKL                                   C4AB      58      88       1   RUNTIME     
+     _FMUL                                     C503      14      20       7   RUNTIME     
+     _FDIV                                     C517      1E      30       4   RUNTIME     
+     F_PULK                                    C535      15      21       4   RUNTIME     
+     F_PULL                                    C54A      15      21       3   RUNTIME     
+     F_PSHK                                    C55F      13      19       4   RUNTIME     
+     F_XGKL                                    C572      21      33       2   RUNTIME     
+     F_CLRK                                    C593       B      11       2   RUNTIME     
+     F_MAXK                                    C59E       9       9       2   RUNTIME     
+     F_NORMK                                   C5A7      3E      62       3   RUNTIME     
+     _NEG_P                                    C5E5       F      15       1   RUNTIME     
+     _ILSEXT                                   C5F4       7       7       1   RUNTIME     
+     _CASE_SEARCH_BYTE                         C5FB      17      23       1   RUNTIME     
+     L_NEGK                                    C612       7       7       2   RUNTIME     
+     L_PSHK                                    C619       8       8       1   RUNTIME     
+     SL_PULK                                   C621       A      10       1   RUNTIME     
      _Vector_9                                 FFEC       2       2       0   .abs_section_ffec
      _Vector_8                                 FFEE       2       2       0   .abs_section_ffee
 
@@ -1614,8 +1614,6 @@ OBJECT LIST SORTED BY ADDRESS
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
 NOT USED PROCEDURES
-main.c.o:
-  OutCRLF 
 FADD.C.o (ansis.lib):
   _FINC _FDEC _FNEG _FABS 
 FCONV.C.o (ansis.lib):
@@ -1631,31 +1629,34 @@ rtshc12.c.o (ansis.lib):
 VREGS.C.o (ansis.lib):
   UL_PULK 
 SCI.C.o:
-  SCI_InChar SCI_InStatus SCI_OutStatus SCI_InUDec SCI_InUHex SCI_OutUHex 
-  SCI_InString 
+  SCI_InChar SCI_InStatus SCI_OutStatus SCI_OutString SCI_InUDec SCI_InUHex 
+  SCI_OutUHex SCI_InString 
 NOT USED VARIABLES
 main.c.o:
-  max min 
+  max min counter 
 rtshc12.c.o (ansis.lib):
   _PowOfTwo_8 _PowOfTwo_16 _PowOfTwo_32 errno 
 
 *********************************************************************************************
 COPYDOWN SECTION
 ---------------------------------------------------------------------------------------------
-------- ROM-ADDRESS: 0xC60E ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC62B ---- SIZE       4 ---
 Filling bytes inserted
- 00181500
-------- ROM-ADDRESS: 0xC612 ---- RAM-ADDRESS: 0x1500 ---- SIZE       3 ---
+ 00191501
+------- ROM-ADDRESS: 0xC62F ---- RAM-ADDRESS: 0x1501 ---- SIZE       1 ---
+Name of initialized Object : state:1
+ 01
+------- ROM-ADDRESS: 0xC630 ---- RAM-ADDRESS: 0x1502 ---- SIZE       3 ---
 Name of initialized Object : mid
  44A680
-------- ROM-ADDRESS: 0xC615 ---- SIZE       4 ---
+------- ROM-ADDRESS: 0xC633 ---- SIZE       4 ---
 Filling bytes inserted
  00000000
-------- ROM-ADDRESS: 0xC619 ---- RAM-ADDRESS: 0x1507 ---- SIZE      17 ---
+------- ROM-ADDRESS: 0xC637 ---- RAM-ADDRESS: 0x1509 ---- SIZE      17 ---
 Name of initialized Object : setup:3
  0100020003 0004000500 0600070008
  0009
-------- ROM-ADDRESS: 0xC62A ---- SIZE       2 ---
+------- ROM-ADDRESS: 0xC648 ---- SIZE       2 ---
 Filling bytes inserted
  0000
 
@@ -1664,21 +1665,21 @@ OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
 Init                      USES _startupData 
 _Startup                  USES __SEG_END_SSTACK Init main 
-bruh                      USES _FMUL bruh _FDIV _FADD _FSTRUNC 
-handler                   USES _ATDDR0 accinput STRING.Current.Angle...1 
-                                SCI_OutString _ILSEXT _FSFLOAT mid _FADD _FCMP _FSUB _FDIV 
-                                result bruh theta SCI_OutUDec ones tens setup _PT01AD 
+arc_sine                  USES _FMUL arc_sine _FDIV _FADD _FSTRUNC 
+OutCRLF                   USES SCI_OutChar _PTJ 
+handler                   USES mode _ATDCTL45 _ATDDR0 accinput _ILSEXT 
+                                _FSFLOAT mid _FADD _FCMP _FSUB _FDIV result arc_sine 
+                                theta ones tens SCI_OutUDec OutCRLF setup _PT01AD 
 main                      USES _ATDCTL01 _ATDCTL23 _ATDCTL45 _CPMUPROT 
                                 _CPMUFLG _CPMUCLKS _CPMUOSC _CPMUREFDIV _CPMUSYNR 
-                                _CPMUPOSTDIV _DDR01AD _PER01AD _ATDDIEN _DDRJ _TSCR1 _TSCR2 
-                                _TIOS _PERT _TCTL3 _TCTL4 _TIE SCI_Init handler 
-                                Lab4Delay1ms 
+                                _CPMUPOSTDIV _DDR01AD _PER01AD _ATDDIEN _DDRJ _TIE _PERT 
+                                _TIOS _TSCR1 _TSCR2 _TCTL3 _TCTL4 SCI_Init handler 
+                                Lab4Delay1ms state 
 Lab4Delay1ms              USES _PTJ 
-ISR_Vtimch0               USES STRING.Hello.2 SCI_OutString _TC0 
-ISR_Vtimch1               USES _TC1 
+ISR_Vtimch0               USES mode _TC0 
+ISR_Vtimch1               USES state _TC0 
 SCI_Init                  USES _SCI0BD _CASE_SEARCH_BYTE _SCI0ACR2 _SCI0CR2 
 SCI_OutChar               USES _SCI0SR1 _SCI0DRL 
-SCI_OutString             USES SCI_OutChar 
 SCI_OutUDec               USES SCI_OutUDec SCI_OutChar 
 F_ADDKL                   USES F_XGKL F_NORMK 
 _FADD                     USES F_PULK F_PULL F_ADDKL F_PSHK 
@@ -1710,10 +1711,6 @@ DEPENDENCY TREE
  |  |       
  |  +- handler             
  |  |  | 
- |  |  +- SCI_OutString       
- |  |  |  | 
- |  |  |  +- SCI_OutChar         
- |  |  |       
  |  |  +- _ILSEXT             
  |  |  |    
  |  |  +- _FSFLOAT            
@@ -1766,7 +1763,7 @@ DEPENDENCY TREE
  |  |  |  |     
  |  |  |  +- F_PSHK               (see above)
  |  |  |     
- |  |  +- bruh                
+ |  |  +- arc_sine            
  |  |  |  | 
  |  |  |  +- _FMUL               
  |  |  |  |  | 
@@ -1797,6 +1794,10 @@ DEPENDENCY TREE
  |  |  |        +- L_NEGK               (see above)
  |  |  |           
  |  |  +- SCI_OutUDec         
+ |  |  |  | 
+ |  |  |  +- SCI_OutChar         
+ |  |  |       
+ |  |  +- OutCRLF             
  |  |     | 
  |  |     +- SCI_OutChar          (see above)
  |  |        
@@ -1811,9 +1812,7 @@ DEPENDENCY TREE
  _Vector_8           
  | 
  +- ISR_Vtimch0         
-    | 
-    +- SCI_OutString        (see above)
-       
+      
  _Vector_9           
  | 
  +- ISR_Vtimch1         
@@ -1824,6 +1823,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 1586
+Number of blocks to be downloaded: 6
+Total size of all blocks to be downloaded: 1616
 
