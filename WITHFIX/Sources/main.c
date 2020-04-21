@@ -1,5 +1,5 @@
 //*********************************************************************  
-//*                         Lab 4 MILESTONE                           
+//*                                                 
 //                    Computer Engineering 2DP4  
 //                       McMaster University                       
 //                         Final Project
@@ -7,24 +7,26 @@
 //    References made to MC9S12G Reference Manual and Lecture Slides
 
 
-// INCLUDE STATEMENTS 
+// INCLUDE STATEMENTS and CONSTANTS
 #include <hidef.h>     
 #include "derivative.h"    
 #include "SCI.h"
 #define PI (3.14)
+
 // FUNCTION PROTOTYPES
 void Lab4Delay1ms(unsigned int numTimes);
 void OutCRLF(void);
-int accinput;
-double result;
 int arc_sine(double ratio); 
   
   
 // Global Variable Declaration
   
-int mode = 0;  
-int state = 1;
+int mode = 0;   // for x or y axis measurement.  
+int state = 1;  // for ON and OFF states, default is ON (1)
 int theta;
+
+int accinput;
+double result;
 
 // Max and min values of the accelerometer
 double max = 1599.0; 
@@ -33,16 +35,15 @@ double mid = 1332.0;
 
 short ones;
 short tens;
-int setup[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09}; // Array of DDR1AD setups
-//int setup_p[] = {0b00000, 0b00001, 0b00010, 0b00011, 0b00100, 0b00101, 0b00110, 0b00111, 0b01000, 0b01001};
+int setup[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09}; // Array of DDR setups for each BCD number;. 
 
 double result;
 int counter = 0;
 
 int arc_sine(double ratio) {
   /* Taylor series approximation of arcsine given the angle in radians 
-     This approximation is not very good. The angles are a good margin off.
-     I can correct for this in the normalization equation by lowering the denominator */
+     This approximation is not very good. The angles are a small margin off.
+     I can correct for this in the approximation equation by lowering the denominator */
      
   double output = ratio + ((ratio*ratio*ratio)/6.0) + (3*(ratio*ratio*ratio*ratio*ratio)/40.0) + (5*(ratio*ratio*ratio*ratio*ratio*ratio*ratio)/112.0);
   // We want to return the angle in degrees
@@ -54,8 +55,6 @@ void OutCRLF(void){
   SCI_OutChar(LF);
   PTJ ^= 0x20;          // toggle LED D2
 }
-
-
 
 
 void handler() {
@@ -139,47 +138,31 @@ void main(void) {
   CPMUSYNR = 0x01; // Set CPU sync ratio value to 1
   CPMUPOSTDIV = 0x01; // Set CPU post ratio value to 1 
   
-  //DDRP = 0x1F; 
-  
+
+  // IO registers 
   DDR1AD = 0b10001111; // First 4 ports are inputs. 
   PER1AD = 0x01110000; // pull up resistors on the inputs
   DDR0AD = 0x0F;
- 
-  ATDDIEN= 0x10100000;// Ports 0-3 are analog inputs, ports 4-7 are digital. 
+   ATDDIEN= 0x10100000;// Ports 0-3 are analog inputs, ports 4-7 are digital. 
   
-     /* ESDUINO PORT CONFIGURATION BELOW (Don't Edit) */
-  /////////////////////////////////////////////////////  
-  //Set Ports
-  DDRJ = 0xFF;      //set all port J as output
 
  // Now starts timer and interrupt register configuration.
   TIE   = 0x03;
-
   PERT  = 0x03;
-
   TIOS  = 0xFC;
-
   TSCR1 = 0x90;
-
   TSCR2 = 0x04;
-
   TCTL3 = 0x00;
-
   TCTL4 = 0x0A;      
   
 	EnableInterrupts; //CodeWarrior's method of enabling interrupts
    
-   ////////////////a/////////////////////////////////////
-  /*ESDUINO PORT CONFIGURATION ABOVE*/
- 
-    /* Esduino Loops Forever*/
-  //////////////////////////////////////////////////// 
   
   SCI_Init(9600);
   while(state==1){
     
-    handler();
-    Lab4Delay1ms(400);
+    handler(); // call handler() which handles serial communicationm, calculations and BCD output
+    Lab4Delay1ms(500);
     
   } 
   
@@ -212,6 +195,7 @@ interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
   mode++; 
   mode%=2;
   temp = TC0; 
+  return;
 }
   
   interrupt  VectorNumber_Vtimch1 void ISR_Vtimch1(void)
@@ -221,6 +205,7 @@ interrupt  VectorNumber_Vtimch0 void ISR_Vtimch0(void)
   state++;
   state%=2; 
   temp = TC0;       //Refer back to TFFCA, we enabled FastFlagClear, thus by reading the Timer Capture input we automatically clear the flag, allowing another TIC interrupt
+  return; 
   }
 
 
