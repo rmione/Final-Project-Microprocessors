@@ -1,9 +1,9 @@
 //*********************************************************************  
 //*                         Lab 4 MILESTONE                           
-//                    Computer Engineering 2DP4  
-//                       McMaster University                       
+//                    Computer Engineering class  
+//                       School                       
 //                         Final Project
-//                    Code Written by Riley Mione
+//                    Code Written by 
 //    References made to MC9S12G Reference Manual and Lecture Slides
 
 
